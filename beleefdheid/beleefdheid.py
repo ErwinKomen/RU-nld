@@ -15,7 +15,7 @@ import utils
 from TextSearch import TextSearch
 # The data for this project
 import data
-from pattern.text.nl import parse, split
+from pattern.text.nl import parse, split, polarity
 
 # Generic error handling
 errHandle = utils.ErrHandle()
@@ -132,7 +132,10 @@ def process_beleefd(oArgs):
         # Initialize the evaluation functions
         for oRule in data.auto_rules:
             oRule['textsearch'] = None
-            oRule['textsearch'] = TextSearch(oRule['words'])
+            if 'words' in oRule:
+                oRule['textsearch'] = TextSearch(oRule['words'])
+            elif 'custom' in oRule and oRule['custom'] == "polarity":
+                oRule['custom'] = polarity
 
         if method == "excel_to_json":
             # Create a row for the header
@@ -144,30 +147,30 @@ def process_beleefd(oArgs):
         max_col = col_no
         while col_no < 130 or ws.cell(row=row_no, column=col_no).value != None:
             cell = ws.cell(row=row_no, column=col_no)
-            if cell.value != None:
-                # Get the name of this column
-                col_name = cell.value
+
+            # Get the name of this column
+            col_name = "(empty)" if cell.value == None else cell.value
                 
-                # Always copy the header
-                if method == "excel_to_json":
-                    lRow.append(col_name)
-                else:
-                    ws_dst.cell(row=row_no, column=col_no_dst).value = col_name
-                if col_name in tweet_cols.keys():
-                    # Get this object
-                    oTweetCol = tweet_cols[col_name]
-                    # Set the source number of this column
-                    oTweetCol['src'] = col_no
-                    oTweetCol['dst'] = col_no_dst
-                    # Insert columns as per the data (data labels)
-                    for oLabel in data.auto_rules:
-                        label = oLabel['label']
-                        col_no_dst += 1
-                        # Name the column                        
-                        if method == "excel_to_json":
-                            lRow.append(label)
-                        else:
-                            ws_dst.cell(row=row_no, column=col_no_dst).value = label
+            # Always copy the header
+            if method == "excel_to_json":
+                lRow.append(col_name)
+            else:
+                ws_dst.cell(row=row_no, column=col_no_dst).value = col_name
+            if col_name in tweet_cols.keys():
+                # Get this object
+                oTweetCol = tweet_cols[col_name]
+                # Set the source number of this column
+                oTweetCol['src'] = col_no
+                oTweetCol['dst'] = col_no_dst
+                # Insert columns as per the data (data labels)
+                for oLabel in data.auto_rules:
+                    label = oLabel['label']
+                    col_no_dst += 1
+                    # Name the column                        
+                    if method == "excel_to_json":
+                        lRow.append(label)
+                    else:
+                        ws_dst.cell(row=row_no, column=col_no_dst).value = label
 
             # Advance the column numbers
             max_col = col_no
@@ -211,12 +214,22 @@ def process_beleefd(oArgs):
                 if col_no in tweet_cols_src:
                     # Yes! get the text of this cell
                     sText = "{}".format(cell_value)
+
                     # Walk all the auto_rules
                     for oLabel in data.auto_rules:
                         # Advance the destination column
                         col_no_dst += 1
-                        # Calculate the value for this evaluation
-                        evaluation = 1 if oLabel['textsearch'].exists(sText) else 0
+
+                        if cell_value == None or sText == "":
+                            evaluation = 99
+                        else:
+                            # Calculate the value for this evaluation
+                            fTextsearch = oLabel.get('textsearch')
+                            if fTextsearch == None:
+                                fCustom = oLabel.get('custom')
+                                evaluation = fCustom(sText)
+                            else:
+                                evaluation = 1 if fTextsearch.exists(sText) else 0
                         if method == "excel_to_json":
                             lRow.append(evaluation)
                         else:

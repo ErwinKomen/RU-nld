@@ -43,4 +43,6 @@ auto_rules = [
                 "words": ["achteraan", "afdeling", "doorgeven", "zetten het door", "doorzetten naar", "feedback",
                     "melding", "melden", "intern", "aankaarten", "onderzoek", "er is direct", "we hebben direct", 
                     "ervoor zorgen dat"] },
+    {"id": 17, "label": "Polariteit", 
+                "custom": "polarity" }, 
     ]

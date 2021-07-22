@@ -13,7 +13,7 @@
     <RootNamespace>beleefdheid</RootNamespace>
     <InterpreterId>MSBuild|nld36|$(MSBuildProjectFullPath)</InterpreterId>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments>-m frequency -i "d:\data files\tg\beleefdheid\crp\HotelTweets.xlsx"</CommandLineArguments>
+    <CommandLineArguments>-m beleefd -i "d:\data files\tg\beleefdheid\twitter_input.xlsx"</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
