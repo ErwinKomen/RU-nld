@@ -26,7 +26,7 @@ class TextSearch(object):
         # Return the response that is needed
         return response
 
-    def exists(self, text_part):
+    def exists(self, text_part, bShow = False):
         """Check if [text_part] contains anything from the list [wordlist]"""
 
         method = "word_by_word"
@@ -62,9 +62,15 @@ class TextSearch(object):
                                     break
                         else:
                             for chunk in self.wordlist:
-                                if chunk in sText:
+                                # if chunk in sText:
+                                match_chunk = r'.*\b{}\b.*'.format(re.escape(chunk))
+                                if re.match(match_chunk, sText, re.IGNORECASE):
                                     iCount += 1
+                                    # DEBUGGING: show the hit
+                                    if bShow:
+                                        self.errHandle.Status("Hit: [{}] in: {}".format(chunk, sText))
                                     break
+                                
             # The result is a count higher than 0
             return (iCount > 0)
         except:

@@ -97,6 +97,7 @@ def process_beleefd(oArgs):
     # Initialisations
     method = "excel_to_excel"
     method = "excel_to_json"
+    bDebug = False
     lOutput = []
     tweet_cols = {
         "Text_tweet_1": {"src": 0, "dst": 0}, 
@@ -229,7 +230,8 @@ def process_beleefd(oArgs):
                                 fCustom = oLabel.get('custom')
                                 evaluation = fCustom(sText)
                             else:
-                                evaluation = 1 if fTextsearch.exists(sText) else 0
+                                bShow = (bDebug and oLabel.get("label") == "Uitleg")
+                                evaluation = 1 if fTextsearch.exists(sText, bShow) else 0
                         if method == "excel_to_json":
                             lRow.append(evaluation)
                         else:
