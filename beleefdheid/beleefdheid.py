@@ -15,7 +15,7 @@ import utils
 from TextSearch import TextSearch
 # The data for this project
 import data
-from pattern.text.nl import parse, split, polarity
+from pattern.text.nl import parse, split, polarity, subjectivity
 
 # Generic error handling
 errHandle = utils.ErrHandle()
@@ -137,6 +137,8 @@ def process_beleefd(oArgs):
                 oRule['textsearch'] = TextSearch(oRule['words'])
             elif 'custom' in oRule and oRule['custom'] == "polarity":
                 oRule['custom'] = polarity
+            elif 'custom' in oRule and oRule['custom'] == "subjectivity":
+                oRule['custom'] = subjectivity
 
         if method == "excel_to_json":
             # Create a row for the header

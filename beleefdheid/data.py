@@ -45,4 +45,6 @@ auto_rules = [
                     "ervoor zorgen dat"] },
     {"id": 17, "label": "Polariteit", 
                 "custom": "polarity" }, 
+    {"id": 18, "label": "Subjectivity", 
+                "custom": "subjectivity" }, 
     ]
